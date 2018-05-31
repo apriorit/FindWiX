@@ -1,0 +1,1 @@
+wix_add_project(Minimal Main.wxs) #minimal Wix project

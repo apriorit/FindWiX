@@ -1,0 +1,4 @@
+wix_add_project(WithExtension 
+    Main.wxs
+    EXTENSIONS WixUIExtension WixUtilExtension  #the way to add one or more extensions
+    )

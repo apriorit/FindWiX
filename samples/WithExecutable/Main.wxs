@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?include vars.wxi?> <!--cmake variables and their values-->
+<?include depends.wxi?> <!--paths to cmake dependencies-->
+
+<?if $(sys.BUILDARCH) = x64?>
+    <?define Win64="yes"?>
+    <?define PlatformProgramFilesFolder="ProgramFiles64Folder"?>
+<?else?>
+    <?define Win64="no"?>
+    <?define PlatformProgramFilesFolder="ProgramFilesFolder"?>
+<?endif?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*"
+             Name="WithExecutable"
+             Language="1033"
+             Version="1.0.0.0"
+             Manufacturer="Apriorit Inc."
+             UpgradeCode="58FB0E6C-94EF-4AFB-A067-A6DA6B17E10F">
+        <Package InstallerVersion="301" Compressed="yes"/>
+        <Media Id="1" Cabinet="media1.cab" EmbedCab="yes"/>
+
+        <!--Features-->
+        <Feature Id="DefaultFeature" Level="1">
+            <ComponentRef Id="CMP_CppExecutable_exe"/>
+            <ComponentRef Id="CMP_CppExecutable_pdb"/>
+        </Feature>
+
+        <!--Directory structure-->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="$(var.PlatformProgramFilesFolder)">
+                <Directory Id="INSTALL_ROOT" Name="WithExecutable"/>
+            </Directory>
+        </Directory>
+
+        <!--Components-->
+        <DirectoryRef Id="INSTALL_ROOT">
+            <Component Id="CMP_CppExecutable_exe" Guid="*" Win64="$(var.Win64)">
+                <!--"$(var.TARGET_FILE:CppExecutable)" from depends.wxi-->
+                <File Source="$(var.TARGET_FILE:CppExecutable)" KeyPath="yes"/>
+            </Component>
+
+            <Component Id="CMP_CppExecutable_pdb" Guid="*" Win64="$(var.Win64)">
+                <!--"$(var.TARGET_PDB_FILE:CppExecutable)" from depends.wxi-->
+                <File Source="$(var.TARGET_PDB_FILE:CppExecutable)" KeyPath="yes"/>
+            </Component>
+        </DirectoryRef>
+    </Product>
+</Wix>

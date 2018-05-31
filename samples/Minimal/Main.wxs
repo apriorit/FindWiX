@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?include vars.wxi ?> <!--cmake variables and their values-->
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*"
+             Name="Minimal"
+             Language="1033"
+             Version="1.0.0.0"
+             Manufacturer="Apriorit Inc."
+             UpgradeCode="58FB0E6C-94EF-4AFB-A067-A6DA6B17E10F">
+        <Package InstallerVersion="301" Compressed="yes"/>
+        <Media Id="1" Cabinet="media1.cab" EmbedCab="yes"/>
+
+        <!--Directory structure-->
+        <Directory Id="TARGETDIR" Name="SourceDir"/>
+    </Product>
+</Wix>

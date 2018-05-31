@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?include vars.wxi ?> <!--cmake variables and their values-->
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*"
+             Name="WithExtension"
+             Language="1033"
+             Version="1.0.0.0"
+             Manufacturer="Apriorit Inc."
+             UpgradeCode="58FB0E6C-94EF-4AFB-A067-A6DA6B17E10F">
+        <Package InstallerVersion="301" Compressed="yes"/>
+        <Media Id="1" Cabinet="media1.cab" EmbedCab="yes"/>
+
+        <!--Directory structure-->
+        <Directory Id="TARGETDIR" Name="SourceDir"/>
+
+        <!--Features--> 
+        <Feature Id="DefaultFeature" Level="1">
+            <ComponentRef Id="CMP_EmptyComponent"/>
+        </Feature>
+
+        <!--Components-->
+        <DirectoryRef Id="TARGETDIR">
+            <Component Id="CMP_EmptyComponent" Guid='12345678-1234-1234-1234-222222222221'/>
+        </DirectoryRef>
+
+       <UIRef Id="WixUI_Minimal"/>
+    </Product>
+</Wix>

@@ -1,0 +1,1 @@
+wix_add_project(WithFragment Main.wxs Fragment.wxs) #two interconnected files
