@@ -1,4 +1,4 @@
-# FindWIX [![Build status](https://ci.appveyor.com/api/projects/status/4iagwdkceft3fb0o?svg=true)](https://ci.appveyor.com/project/sqzhr/findwix)
+# FindWIX [![Build status](https://ci.appveyor.com/api/projects/status/4iagwdkceft3fb0o?svg=true)](https://ci.appveyor.com/project/sqzhr/findwix-73k2b)
 
 Create a  new WIX cmake module
 * [Introduction](#introduction)
