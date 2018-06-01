@@ -36,6 +36,10 @@ function(wix_add_project _target)
         set(WIX_OUTPUT_NAME "${_target}.msi")
     endif()
 
+    if(NOT ("${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" STREQUAL ""))
+        set(WIX_OUTPUT_NAME ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${WIX_OUTPUT_NAME})
+    endif()
+
     foreach(currentFILE ${WIX_UNPARSED_ARGUMENTS})
         GET_FILENAME_COMPONENT(SOURCE_FILE_NAME ${currentFILE} NAME_WE)
         list(APPEND WIXOBJ_LIST "${SOURCE_FILE_NAME}.wixobj")
@@ -52,15 +56,15 @@ function(wix_add_project _target)
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${WIXOBJ_LIST}
         COMMAND "${WIX_ROOT}/bin/candle.exe" -arch ${WIX_ARCH} ${WIX_COMPILE_FLAGS} -o "${CMAKE_CURRENT_BINARY_DIR}/" ${WIX_SOURCES_LIST} -I"${CMAKE_CURRENT_BINARY_DIR}" -I"${CMAKE_CURRENT_BINARY_DIR}/wxi/$<CONFIG>" -I"${CMAKE_CURRENT_BINARY_DIR}/wxi"
         DEPENDS ${WIX_SOURCES_LIST}
-        COMMENT "Creating .wixobj file"
+        COMMENT "Compiling to wixobj file(s)"
         )
 
     # Link MSI file
     add_custom_command(
-        OUTPUT ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${WIX_OUTPUT_NAME}
+        OUTPUT ${WIX_OUTPUT_NAME}
         COMMAND "${WIX_ROOT}/bin/light.exe" ${WIX_LINK_FLAGS} -o ${WIX_OUTPUT_NAME} ${WIXOBJ_LIST} ${EXTENSION_LIST}
         DEPENDS ${WIXOBJ_LIST} ${WIX_DEPENDS}
-        COMMENT "Creating ${WIX_OUTPUT_NAME} file"
+        COMMENT "Linking to ${WIX_OUTPUT_NAME} file"
         )
 
     add_custom_target(${_target} ALL
@@ -70,8 +74,8 @@ function(wix_add_project _target)
 
     string(CONCAT DEPENDS_FILE "<?xml version='1.0' encoding='UTF-8'?>\n\n<Include>\n")
     foreach(current_depends ${WIX_DEPENDS})
-        string(CONCAT DEPENDS_FILE  ${DEPENDS_FILE} "\t<?define TARGET_FILE:${current_depends}='$<TARGET_FILE:${current_depends}>' ?>\n")
-        string(CONCAT DEPENDS_FILE  ${DEPENDS_FILE} "\t<?define TARGET_PDB_FILE:${current_depends}='$<TARGET_PDB_FILE:${current_depends}>' ?>\n")
+        string(CONCAT DEPENDS_FILE ${DEPENDS_FILE} "\t<?define TARGET_FILE:${current_depends}='$<TARGET_FILE:${current_depends}>' ?>\n")
+        string(CONCAT DEPENDS_FILE ${DEPENDS_FILE} "\t<?define TARGET_PDB_FILE:${current_depends}='$<TARGET_PDB_FILE:${current_depends}>' ?>\n")
     endforeach()
     string(CONCAT DEPENDS_FILE ${DEPENDS_FILE} "</Include>")
     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/wxi/$<CONFIG>/depends.wxi" CONTENT "${DEPENDS_FILE}")
