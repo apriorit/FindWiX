@@ -25,6 +25,16 @@ Also the following variables will be defined:
 * ```WIX_FOUND``` -- if false, do not try to use WiX
 * ```WIX_ROOT``` -- where WiX is installed
 
+* ```WIX_COMPILE_FLAGS``` -- flags to be used when compiling WiX source file(s).
+* ```WIX_LINK_FLAGS``` -- flags to be used when linking an .wixobj file(s).
+
+Could be used with arguments, for example: 
+```cmake
+set(WIX_COMPILE_FLAGS ${WIX_COMPILE_FLAGS} -wx)
+set(WIX_LINK_FLAGS ${WIX_LINK_FLAGS} -wx)
+```
+Treats all warnings as an error. 
+
 [FindWiX.cmake](cmake/FindWix.cmake) generates `vars.wxi` file of non-duplicated items list of all available variables and their values in xml format.
 Fragment of generated file content:
 ```XML
