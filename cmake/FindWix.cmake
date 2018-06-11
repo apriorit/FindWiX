@@ -76,7 +76,7 @@ function(wix_add_project _target)
     foreach(current_depends ${WIX_DEPENDS})
         string(CONCAT DEPENDS_FILE ${DEPENDS_FILE} "\t<?define TARGET_FILE:${current_depends}='$<TARGET_FILE:${current_depends}>' ?>\n")
         # skip pdb for csharp projects as it says: "TARGET_PDB_FILE is not supported by the target linker"
-        string(CONCAT DEPENDS_FILE ${DEPENDS_FILE} "\t<?define TARGET_PDB_FILE:${current_depends}='$<$<STREQUAL:$<TARGET_PROPERTY:${current_depends},VS_DOTNET_REFERENCES>,"">:$<TARGET_PDB_FILE:${current_depends}>>' ?>\n")
+        string(CONCAT DEPENDS_FILE ${DEPENDS_FILE} "\t<?define TARGET_PDB_FILE:${current_depends}='$<$<STREQUAL:$<TARGET_PROPERTY:${current_depends},VS_DOTNET_REFERENCES>,>:$<TARGET_PDB_FILE:${current_depends}>>' ?>\n")
     endforeach()
     string(CONCAT DEPENDS_FILE ${DEPENDS_FILE} "</Include>")
     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/wxi/$<CONFIG>/depends.wxi" CONTENT "${DEPENDS_FILE}")
