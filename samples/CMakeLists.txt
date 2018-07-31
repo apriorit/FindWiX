@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(FindWix)
+project(FindWiX)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

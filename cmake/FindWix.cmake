@@ -51,7 +51,7 @@ function(wix_add_project _target)
         list(APPEND EXTENSION_LIST ${current_WIX_EXTENSION})
     endforeach()
 
-    # Call wix compiler
+    # Call WiX compiler
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${WIXOBJ_LIST}
         COMMAND "${WIX_ROOT}/bin/candle.exe" -arch ${WIX_ARCH} ${WIX_COMPILE_FLAGS} -o "${CMAKE_CURRENT_BINARY_DIR}/" ${WIX_SOURCES_LIST} -I"${CMAKE_CURRENT_BINARY_DIR}" -I"${CMAKE_CURRENT_BINARY_DIR}/wxi/$<CONFIG>" -I"${CMAKE_CURRENT_BINARY_DIR}/wxi"
