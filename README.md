@@ -14,7 +14,7 @@ A native solution for building [Windows Installer](https://en.wikipedia.org/wiki
 
 [FindWiX](https://github.com/apriorit/FindWiX) comes to rescue in such cases.
 
-##### Requirements:
+## Requirements:
 - [CMake 3.0](https://cmake.org/download/) or higher
 - [WiX toolset 3.0](http://wixtoolset.org/releases/) or higher
 
