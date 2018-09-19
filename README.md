@@ -1,6 +1,6 @@
 # FindWiX [![Build status](https://ci.appveyor.com/api/projects/status/4iagwdkceft3fb0o?svg=true)](https://ci.appveyor.com/project/sqzhr/findwix-73k2b)
 
-Create a new WiX cmake module
+[CMake](https://cmake.org) module for building [Windows Installer](https://en.wikipedia.org/wiki/Windows_Installer) packages with [WiX toolset](http://wixtoolset.org)
 * [Introduction](#introduction)
 * [Usage](#usage)
 * [Samples](#samples) 
@@ -8,88 +8,91 @@ Create a new WiX cmake module
 * [Version History](#version-history)
 
 # Introduction
-Every time when, you make application more complex that single executive or library you need an installer for your project. 
-If you like to use free flexible and extensible tool as we are, you could already use CMake.
-[Cmake](https://cmake.org) is a cross-platform free software for managing the build process, it doesn`t build project directly, only generates necessary build management files according to CMakeLists.txt file, that controls the build process and should be created in every project directory. The generated files can be used for building the project with Visual Studio or other toolset.
+A native solution for building [Windows Installer](https://en.wikipedia.org/wiki/Windows_Installer) packages in [CMake](https://cmake.org) is [CPack](https://cmake.org/cmake/help/v3.0/module/CPack.html). However it has several drawbacks:
+- limited to one installer project (cannot created several installers, for example `client.msi` and `server.msi`)
+- cannot directly work with `wsx` files (hard to convert existings installer source code to [CMake](https://cmake.org))
 
-### Existing methods for generating installer:
-The main solution for CMake is [CPack](https://cmake.org/cmake/help/v3.0/module/CPack.html). It's a module used for build binary and source package installers including msi files. But it allows to work with only one project, therefore CPack is not suitable for the purpose of creation several msi files at once. The inability to generate two or more msi files at the same time is a significant drawback.
+[FindWiX](https://github.com/apriorit/FindWiX) comes to rescue in such cases.
 
-[WiX (Windows Installer XML Toolset)](http://wixtoolset.org) is tool, which used for building Windows installer packages. It consists of a command-line environment that developers may integrate into their build processes to build MSI and MSM packages. It uses for creating installers for all main Microsofts products which is a proof of usability, at least.
-So we decided to develop own module for CMake which combine advantages of both tools.
-
-### FindWiX
-Behold FindWiX. It makes your life easier and installer creation more comfy. It possible to build the WiX project for creating Windows Installers. You could create as much as you want installers for single solution.
-
-Requirements:
+##### Requirements:
 - [CMake 3.0](https://cmake.org/download/) or higher
 - [WiX toolset 3.0](http://wixtoolset.org/releases/) or higher
 
 # Usage
-Add FindWiX to the module search path and call `find_package`
+## find_package()
+Add [FindWiX](https://github.com/apriorit/FindWiX) to the module search path and call `find_package`:
 ```cmake
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 find_package(WIX REQUIRED)
 ```
-FindWiX will search for the installed WiX Toolset and expose commands for creating installer file.
-Also the following variables will be defined:
-* ```WIX_FOUND``` -- if false, WiX is absent
-* ```WIX_ROOT``` -- path where WiX is installed
+[FindWiX](https://github.com/apriorit/FindWiX) will search for the installed [WiX toolset](http://wixtoolset.org), expose functions for creating installer packages and define the following variables:
+* ```WIX_FOUND``` -- if false [WiX toolset](http://wixtoolset.org) is absent
+* ```WIX_ROOT``` -- path where [WiX toolset](http://wixtoolset.org) is installed
+* ```WIX_COMPILE_FLAGS``` -- flags to be used when compiling `wxs` source files
+* ```WIX_LINK_FLAGS``` -- flags to be used when linking `wixobj` files
 
-* ```WIX_COMPILE_FLAGS``` -- flags to be used when compiling WiX source files.
-* ```WIX_LINK_FLAGS``` -- flags to be used when linking an wixobj files.
-
-You could do some fine tuning, for example treats all warnings as an error:
+## WiX compile and link flags
+You could do some fine tuning, for example treat warnings as errors:
 ```cmake
 set(WIX_COMPILE_FLAGS ${WIX_COMPILE_FLAGS} -wx)
 set(WIX_LINK_FLAGS ${WIX_LINK_FLAGS} -wx)
 ```
 
-[FindWiX.cmake](cmake/FindWix.cmake) generates `vars.wxi` file of non-duplicated items list of all available variables and their values as WiX include.
-Fragment of `vars.wxi`:
-```XML
+## CMake variables in WiX
+[FindWiX](https://github.com/apriorit/FindWiX) generates `vars.wxi` to make [CMake](https://cmake.org) variables available in [WiX toolset](http://wixtoolset.org). Here is a fragment of `vars.wxi`:
+```xml
 <?xml version='1.0' encoding='UTF-8'?>
-
 <Include>
-	<?define ARGC='4' ?>
-	<?define ARGN='Main.wxs;DEPENDS;CppExecutable' ?>
-	<?define ARGV='WithExecutable;Main.wxs;DEPENDS;CppExecutable' ?>
-	<?define ARGV0='WithExecutable' ?>
-	<?define ARGV1='Main.wxs' ?>
-	<?define ARGV2='DEPENDS' ?>
-	<?define ARGV3='CppExecutable' ?>
-	<?define CMAKE_AR='' ?>
-	<?define CMAKE_AUTOMOC_COMPILER_PREDEFINES='ON' ?>
-	<?define CMAKE_AUTOMOC_MACRO_NAMES='Q_OBJECT;Q_GADGET;Q_NAMESPACE' ?>
+    <?define ARGC='4' ?>
+    <?define ARGN='Main.wxs;DEPENDS;CppExecutable' ?>
+    <?define ARGV='WithExecutable;Main.wxs;DEPENDS;CppExecutable' ?>
+    <?define ARGV0='WithExecutable' ?>
+    <?define ARGV1='Main.wxs' ?>
+    <?define ARGV2='DEPENDS' ?>
+    <?define ARGV3='CppExecutable' ?>
+    <?define CMAKE_AR='' ?>
+    <?define CMAKE_AUTOMOC_COMPILER_PREDEFINES='ON' ?>
+    <?define CMAKE_AUTOMOC_MACRO_NAMES='Q_OBJECT;Q_GADGET;Q_NAMESPACE' ?>
 </Include>
 ```
-Also paths to CMake dependencies are stored in generated `depends.wxi` file.
-
-Fragment of `depends.wxi`:
-```XML
-<?xml version='1.0' encoding='UTF-8'?>
-
-<Include>
-	<?define TARGET_FILE:CppExecutable='C:/my_proj/WithExecutable/Debug/CppExecutable.exe' ?>
-	<?define TARGET_PDB_FILE:CppExecutable='C:/my_proj/WithExecutable/Debug/CppExecutable.pdb' ?>
-</Include>
+To get access to those variables include `vars.wxi` into your `wxs` file:
+```xml
+<?include vars.wxi?> <!--cmake variables and their values-->
 ```
 
-##### wix_add_project()
-The only function takes at least one parameter - wxs source file, rest is optional. It generates wixobj files corresponding to the input data, then launches the WiX command (as custom command of CMake file) to create msi file. It is performed for each subdirectory relative to main CmakeLists.txt file.
+## CMake project dependencies in WiX
+Also [FindWiX](https://github.com/apriorit/FindWiX) generates `depends.wxi` with file paths to [CMake](https://cmake.org) project dependencies. Here is a fragment of `depends.wxi`:
+```xml
+<?xml version='1.0' encoding='UTF-8'?>
+<Include>
+    <?define TARGET_FILE:CppExecutable='C:/my_proj/WithExecutable/Debug/CppExecutable.exe' ?>
+    <?define TARGET_PDB_FILE:CppExecutable='C:/my_proj/WithExecutable/Debug/CppExecutable.pdb' ?>
+</Include>
+```
+To get access to those variables include `depends.wxi` into your `wxs` file:
+```xml
+<?include depends.wxi?> <!--paths to cmake dependencies-->
+```
+
+## wix_add_project()
+This function creates a new target for [WiX](http://wixtoolset.org) project. It compiles one or several `wsx` files to `wixobj` files and then links them together into the resulting `msi` file.
 
 ```cmake
 wix_add_project(<name>
   source1 [source2 ...]
   [OUTPUT_NAME <msi_file_name>]
   [EXTENSIONS extension1 [extension2...]]
-  [DEPENDS executable1 [executable2..]])
+  [DEPENDS target1 [target2...]])
 ```
-  * `OUTPUT_NAME` -- allow to set the name of a result msi file, it can be set to an empty string, then the name of result file will be set to the <name> designation.
-  * `EXTENSIONS` -- add one or more extensions
-  * `DEPENDS` -- add files that should be built first
+
+Where:
+  * <name> -- name of the project target
+  * source1 [source2 ...] -- one or several `wsx` files
+  * `OUTPUT_NAME` -- allows to set a name for the resulting `msi` file, if omitted the name is set to <name>
+  * `EXTENSIONS` -- add one or more WiX extensions (for example `WixUIExtension`)
+  * `DEPENDS` -- add project dependencies for the correct build order
   
-  Example:
+Example:
   ```cmake
   wix_add_project(my_project 
     main.wxs one_more.wxs 
@@ -99,10 +102,10 @@ wix_add_project(<name>
   ```  
 
 # Samples 
-Take a look at the [samples](samples/) folder to see how FindWiX is built.
+Take a look at the [samples](samples/) folder to see how to use [FindWiX](https://github.com/apriorit/FindWiX).
 
 # License
-FindWiX is licensed under the OSI-approved 3-clause BSD license. You can freely use it in your commercial or opensource software.
+[FindWiX](https://github.com/apriorit/FindWiX) is licensed under the OSI-approved 3-clause BSD license. You can freely use it in your commercial or opensource software.
 
 # Version History
 
