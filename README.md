@@ -26,10 +26,10 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 find_package(WIX REQUIRED)
 ```
 [FindWiX](https://github.com/apriorit/FindWiX) will search for the installed [WiX toolset](http://wixtoolset.org), expose functions for creating installer packages and define the following variables:
-* ```WIX_FOUND``` -- if false [WiX toolset](http://wixtoolset.org) is absent
-* ```WIX_ROOT``` -- path where [WiX toolset](http://wixtoolset.org) is installed
-* ```WIX_COMPILE_FLAGS``` -- flags to be used when compiling `wxs` source files
-* ```WIX_LINK_FLAGS``` -- flags to be used when linking `wixobj` files
+- `WIX_FOUND` - if false [WiX toolset](http://wixtoolset.org) is absent
+- `WIX_ROOT` - path where [WiX toolset](http://wixtoolset.org) is installed
+- `WIX_COMPILE_FLAGS` - flags to be used when compiling `wxs` source files
+- `WIX_LINK_FLAGS` - flags to be used when linking `wixobj` files
 
 ## WiX compile and link flags
 You could do some fine tuning, for example treat warnings as errors:
@@ -79,27 +79,27 @@ This function creates a new target for [WiX](http://wixtoolset.org) project. It 
 
 ```cmake
 wix_add_project(<name>
-  source1 [source2 ...]
-  [OUTPUT_NAME <msi_file_name>]
-  [EXTENSIONS extension1 [extension2...]]
-  [DEPENDS target1 [target2...]])
+    source1 [source2 ...]
+    [OUTPUT_NAME <msi_file_name>]
+    [EXTENSIONS extension1 [extension2...]]
+    [DEPENDS target1 [target2...]])
 ```
 
 Where:
-  * <name> -- name of the project target
-  * source1 [source2 ...] -- one or several `wsx` files
-  * `OUTPUT_NAME` -- allows to set a name for the resulting `msi` file, if omitted the name is set to <name>
-  * `EXTENSIONS` -- add one or more WiX extensions (for example `WixUIExtension`)
-  * `DEPENDS` -- add project dependencies for the correct build order
+- `<name>` - name of the project target
+- `source1 [source2 ...]` - one or several `wsx` files
+- `OUTPUT_NAME` - allows to set a name for the resulting `msi` file, if omitted the name is set to `<name>`
+- `EXTENSIONS` - add one or more WiX extensions (for example `WixUIExtension`)
+- `DEPENDS` - add project dependencies for the correct build order
   
 Example:
-  ```cmake
-  wix_add_project(my_project 
+```cmake
+wix_add_project(my_project 
     main.wxs one_more.wxs 
     OUTPUT_NAME "NameSample" 
     EXTENSIONS WixUIExtension WixUtilExtension
     DEPENDS CppExecutable)
-  ```  
+```
 
 # Samples 
 Take a look at the [samples](samples/) folder to see how to use [FindWiX](https://github.com/apriorit/FindWiX).
