@@ -1,14 +1,14 @@
-# FindWiX [![Build status](https://ci.appveyor.com/api/projects/status/4iagwdkceft3fb0o?svg=true)](https://ci.appveyor.com/project/sqzhr/findwix-73k2b)
+# FindWiX [![Build status](https://ci.appveyor.com/api/projects/status/ixogwlydnlf0vl2b?svg=true)](https://ci.appveyor.com/project/apriorit/findwix)
 
 [CMake](https://cmake.org) module for building [Windows Installer](https://en.wikipedia.org/wiki/Windows_Installer) packages with [WiX toolset](http://wixtoolset.org)
 * [Introduction](#introduction)
   * [Requirements](#requirements)
 * [Usage](#usage)
   * [find_package()](#find_package)
+  * [wix_add_project()](#wix_add_project)
   * [WiX compile and link flags](#wix-compile-and-link-flags)
   * [CMake variables in WiX](#cmake-variables-in-wix)
   * [CMake project dependencies in WiX](#cmake-project-dependencies-in-wix)
-  * [wix_add_project()](#wix_add_project)
 * [Samples](#samples) 
 * [License](#license) 
 * [Version History](#version-history)
@@ -36,6 +36,33 @@ find_package(WIX REQUIRED)
 - `WIX_ROOT` - path where [WiX toolset](http://wixtoolset.org) is installed
 - `WIX_COMPILE_FLAGS` - flags to be used when compiling `wxs` source files
 - `WIX_LINK_FLAGS` - flags to be used when linking `wixobj` files
+
+## wix_add_project()
+This function creates a new target for WiX project. It compiles one or several `wsx` files to `wixobj` files and then links them together into the resulting `msi` file.
+
+```cmake
+wix_add_project(<name>
+    source1 [source2 ...]
+    [OUTPUT_NAME <msi_file_name>]
+    [EXTENSIONS extension1 [extension2...]]
+    [DEPENDS target1 [target2...]])
+```
+
+Where:
+- `<name>` - name of the project target
+- `source1 [source2 ...]` - one or several `wsx` files
+- `OUTPUT_NAME` - allows to set a name for the resulting `msi` file, if omitted the name is set to `<name>`
+- `EXTENSIONS` - add one or more WiX extensions (for example `WixUIExtension`)
+- `DEPENDS` - add project dependencies for the correct build order
+  
+Example:
+```cmake
+wix_add_project(my_project 
+    main.wxs one_more.wxs 
+    OUTPUT_NAME "NameSample" 
+    EXTENSIONS WixUIExtension WixUtilExtension
+    DEPENDS CppExecutable)
+```
 
 ## WiX compile and link flags
 You could do some fine tuning, for example treat warnings as errors:
@@ -80,33 +107,6 @@ To get access to those variables include `depends.wxi` into your `wxs` file:
 <?include depends.wxi?> <!--paths to cmake dependencies-->
 ```
 
-## wix_add_project()
-This function creates a new target for WiX project. It compiles one or several `wsx` files to `wixobj` files and then links them together into the resulting `msi` file.
-
-```cmake
-wix_add_project(<name>
-    source1 [source2 ...]
-    [OUTPUT_NAME <msi_file_name>]
-    [EXTENSIONS extension1 [extension2...]]
-    [DEPENDS target1 [target2...]])
-```
-
-Where:
-- `<name>` - name of the project target
-- `source1 [source2 ...]` - one or several `wsx` files
-- `OUTPUT_NAME` - allows to set a name for the resulting `msi` file, if omitted the name is set to `<name>`
-- `EXTENSIONS` - add one or more WiX extensions (for example `WixUIExtension`)
-- `DEPENDS` - add project dependencies for the correct build order
-  
-Example:
-```cmake
-wix_add_project(my_project 
-    main.wxs one_more.wxs 
-    OUTPUT_NAME "NameSample" 
-    EXTENSIONS WixUIExtension WixUtilExtension
-    DEPENDS CppExecutable)
-```
-
 # Samples 
 Take a look at the [samples](samples/) folder to see how to use [FindWiX](https://github.com/apriorit/FindWiX).
 
@@ -115,5 +115,5 @@ Take a look at the [samples](samples/) folder to see how to use [FindWiX](https:
 
 # Version History
 
-## Version 1.0.0 (TDB)
+## Version 1.0.0 (20 Sep 2018)
 - Initial public release
