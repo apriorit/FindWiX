@@ -2,7 +2,13 @@
 
 [CMake](https://cmake.org) module for building [Windows Installer](https://en.wikipedia.org/wiki/Windows_Installer) packages with [WiX toolset](http://wixtoolset.org)
 * [Introduction](#introduction)
+  * [Requirements](#requirements)
 * [Usage](#usage)
+  * [find_package()](#find_package)
+  * [WiX compile and link flags](#wix-compile-and-link-flags)
+  * [CMake variables in WiX](#cmake-variables-in-wix)
+  * [CMake project dependencies in WiX](#cmake-project-dependencies-in-wix)
+  * [wix_add_project()](#wix_add_project)
 * [Samples](#samples) 
 * [License](#license) 
 * [Version History](#version-history)
@@ -14,7 +20,7 @@ A native solution for building [Windows Installer](https://en.wikipedia.org/wiki
 
 [FindWiX](https://github.com/apriorit/FindWiX) comes to rescue in such cases.
 
-## Requirements:
+## Requirements
 - [CMake 3.0](https://cmake.org/download/) or higher
 - [WiX toolset 3.0](http://wixtoolset.org/releases/) or higher
 
@@ -39,7 +45,7 @@ set(WIX_LINK_FLAGS ${WIX_LINK_FLAGS} -wx)
 ```
 
 ## CMake variables in WiX
-[FindWiX](https://github.com/apriorit/FindWiX) generates `vars.wxi` to make [CMake](https://cmake.org) variables available in [WiX toolset](http://wixtoolset.org). Here is a fragment of `vars.wxi`:
+[FindWiX](https://github.com/apriorit/FindWiX) generates `vars.wxi` to make [CMake](https://cmake.org) variables available in WiX. Here is a fragment of `vars.wxi`:
 ```xml
 <?xml version='1.0' encoding='UTF-8'?>
 <Include>
@@ -75,7 +81,7 @@ To get access to those variables include `depends.wxi` into your `wxs` file:
 ```
 
 ## wix_add_project()
-This function creates a new target for [WiX](http://wixtoolset.org) project. It compiles one or several `wsx` files to `wixobj` files and then links them together into the resulting `msi` file.
+This function creates a new target for WiX project. It compiles one or several `wsx` files to `wixobj` files and then links them together into the resulting `msi` file.
 
 ```cmake
 wix_add_project(<name>
