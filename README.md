@@ -113,7 +113,7 @@ To get access to those variables include `depends.wxi` into your `wxs` file:
 Take a look at the [samples](samples/) folder to see how to use [FindWiX](https://github.com/apriorit/FindWiX).
 
 # License
-[FindWiX](https://github.com/apriorit/FindWiX) is licensed under the OSI-approved 3-clause BSD license. You can freely use it in your commercial or opensource software.
+[Apriorit](http://www.apriorit.com/) released [FindWiX](https://github.com/apriorit/FindWiX) under the OSI-approved 3-clause BSD license. You can freely use it in your commercial or opensource software.
 
 # Version History
 
