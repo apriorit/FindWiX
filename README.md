@@ -86,6 +86,7 @@ set(WIX_LINK_FLAGS ${WIX_LINK_FLAGS} -wx)
     <?define CMAKE_AR='' ?>
     <?define CMAKE_AUTOMOC_COMPILER_PREDEFINES='ON' ?>
     <?define CMAKE_AUTOMOC_MACRO_NAMES='Q_OBJECT;Q_GADGET;Q_NAMESPACE' ?>
+    ...
 </Include>
 ```
 To get access to those variables include `vars.wxi` into your `wxs` file:
@@ -100,6 +101,7 @@ Also [FindWiX](https://github.com/apriorit/FindWiX) generates `depends.wxi` with
 <Include>
     <?define TARGET_FILE:CppExecutable='C:/my_proj/WithExecutable/Debug/CppExecutable.exe' ?>
     <?define TARGET_PDB_FILE:CppExecutable='C:/my_proj/WithExecutable/Debug/CppExecutable.pdb' ?>
+    ...
 </Include>
 ```
 To get access to those variables include `depends.wxi` into your `wxs` file:
