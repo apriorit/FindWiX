@@ -54,7 +54,7 @@ function(wix_add_project _target)
     # Call WiX compiler
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${WIXOBJ_LIST}
-        COMMAND "${WIX_ROOT}/bin/candle.exe" -arch ${WIX_ARCH} ${WIX_COMPILE_FLAGS} -o "${CMAKE_CURRENT_BINARY_DIR}/" ${WIX_SOURCES_LIST} -I"${CMAKE_CURRENT_BINARY_DIR}" -I"${CMAKE_CURRENT_BINARY_DIR}/wxi/$<CONFIG>" -I"${CMAKE_CURRENT_BINARY_DIR}/wxi"
+        COMMAND "${WIX_ROOT}/bin/candle.exe" -arch ${WIX_ARCH} ${WIX_COMPILE_FLAGS} -o "${CMAKE_CURRENT_BINARY_DIR}/" ${WIX_SOURCES_LIST} -I"${CMAKE_CURRENT_BINARY_DIR}" -I"${CMAKE_CURRENT_BINARY_DIR}/wxi/$<CONFIG>"
         DEPENDS ${WIX_SOURCES_LIST}
         COMMENT "Compiling to wixobj file(s)"
         )
@@ -72,6 +72,19 @@ function(wix_add_project _target)
         SOURCES ${WIX_UNPARSED_ARGUMENTS}
         )
 
+    get_cmake_property(WIX_variableNames VARIABLES)
+    list(REMOVE_DUPLICATES WIX_variableNames)
+    list(REMOVE_ITEM WIX_variableNames "CMAKE_BUILD_TYPE")
+    string(CONCAT VARS_FILE "<?xml version='1.0' encoding='UTF-8'?>\n\n<Include>\n")
+    # handle CMAKE_BUILD_TYPE in a special way to support multiconfiguration generators
+    string(CONCAT VARS_FILE ${VARS_FILE} "\t<?define CMAKE_BUILD_TYPE='$<CONFIG>' ?>\n")
+    foreach(WIX_variableName ${WIX_variableNames})
+        string(REPLACE "$" "$$" OUT "${WIX_variableName}='${${WIX_variableName}}'")
+        string(CONCAT VARS_FILE ${VARS_FILE} "\t<?define ${OUT} ?>\n")
+    endforeach()
+    string(CONCAT VARS_FILE ${VARS_FILE} "</Include>")
+    file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/wxi/$<CONFIG>/vars.wxi" CONTENT "${VARS_FILE}")
+
     string(CONCAT DEPENDS_FILE "<?xml version='1.0' encoding='UTF-8'?>\n\n<Include>\n")
     foreach(current_depends ${WIX_DEPENDS})
         string(CONCAT DEPENDS_FILE ${DEPENDS_FILE} "\t<?define TARGET_FILE:${current_depends}='$<TARGET_FILE:${current_depends}>' ?>\n")
@@ -80,16 +93,4 @@ function(wix_add_project _target)
     endforeach()
     string(CONCAT DEPENDS_FILE ${DEPENDS_FILE} "</Include>")
     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/wxi/$<CONFIG>/depends.wxi" CONTENT "${DEPENDS_FILE}")
-    unset(DEPENDS_FILE)
-
-    get_cmake_property(WIX_variableNames VARIABLES)
-    set(VARS_PATH "${CMAKE_CURRENT_BINARY_DIR}/wxi/vars.wxi")
-    file(WRITE "${VARS_PATH}" "<?xml version='1.0' encoding='UTF-8'?>\n\n<Include>\n")
-    list(REMOVE_DUPLICATES WIX_variableNames)
-    foreach(WIX_variableName ${WIX_variableNames})
-        string(REPLACE "$" "$$" OUT "${WIX_variableName}='${${WIX_variableName}}'")
-        file(APPEND "${VARS_PATH}" "\t<?define ${OUT} ?>\n")
-    endforeach()
-    file(APPEND "${VARS_PATH}" "</Include>")
-
 endfunction()
