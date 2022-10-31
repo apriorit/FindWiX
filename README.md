@@ -16,7 +16,7 @@
 # Introduction
 A native solution for building [Windows Installer](https://en.wikipedia.org/wiki/Windows_Installer) packages in [CMake](https://cmake.org) is [CPack](https://cmake.org/cmake/help/v3.0/module/CPack.html). However it has several drawbacks:
 - limited to one installer project (cannot created several installers, for example `client.msi` and `server.msi`)
-- cannot directly work with `wsx` files (hard to convert existings installer source code to [CMake](https://cmake.org))
+- cannot directly work with `wxs` files (hard to convert existings installer source code to [CMake](https://cmake.org))
 
 [FindWiX](https://github.com/apriorit/FindWiX) comes to rescue in such cases.
 
@@ -38,7 +38,7 @@ find_package(WIX REQUIRED)
 - `WIX_LINK_FLAGS` - flags to be used when linking `wixobj` files
 
 ## wix_add_project()
-This function creates a new target for WiX project. It compiles one or several `wsx` files to `wixobj` files and then links them together into the resulting `msi` file.
+This function creates a new target for WiX project. It compiles one or several `wxs` files to `wixobj` files and then links them together into the resulting `msi` file.
 
 ```cmake
 wix_add_project(<name>
@@ -50,7 +50,7 @@ wix_add_project(<name>
 
 Where:
 - `<name>` - name of the project target
-- `source1 [source2 ...]` - one or several `wsx` files
+- `source1 [source2 ...]` - one or several `wxs` files
 - `OUTPUT_NAME` - allows to set a name for the resulting `msi` file, if omitted the name is set to `<name>`
 - `EXTENSIONS` - add one or more WiX extensions (for example `WixUIExtension`)
 - `DEPENDS` - add project dependencies for the correct build order
